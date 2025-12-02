@@ -6,13 +6,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using TodoApi;
+using DotNetEnv;
 
+
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
-var key = "ThisIsASuperLongSecretKeyForJWT12345!";
+// var key = "ThisIsASuperLongSecretKeyForJWT12345!";
+var connectionString = Environment.GetEnvironmentVariable("TODODB_CONNECTION");
+var key = Environment.GetEnvironmentVariable("JWT_KEY");
 
 builder.Services.AddDbContext<ToDoDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"),
+    options.UseMySql(connectionString,
     new MySqlServerVersion(new Version(8, 0, 32))));
 
 builder.Services.AddCors(options =>
