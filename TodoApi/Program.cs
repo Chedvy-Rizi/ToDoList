@@ -9,10 +9,10 @@ using TodoApi;
 using DotNetEnv;
 
 
-Env.Load();
+if (File.Exists(".env"))
+    Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
-// var key = "ThisIsASuperLongSecretKeyForJWT12345!";
 var connectionString = Environment.GetEnvironmentVariable("TODODB_CONNECTION");
 var key = Environment.GetEnvironmentVariable("JWT_KEY");
 

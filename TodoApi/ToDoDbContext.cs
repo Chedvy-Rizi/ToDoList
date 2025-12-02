@@ -26,7 +26,8 @@ public partial class ToDoDbContext : DbContext
 
         if (!optionsBuilder.IsConfigured)
         {
-           Env.Load();
+            if (File.Exists(".env"))
+                Env.Load();
             var connectionString = Environment.GetEnvironmentVariable("DB_NAME");
             optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
         }
