@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using TodoApi;
 using DotNetEnv;
+using System.Diagnostics;
 
 
 if (File.Exists(".env"))
@@ -14,15 +15,24 @@ if (File.Exists(".env"))
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = Environment.GetEnvironmentVariable("TODODB_CONNECTION");
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'TODODB_CONNECTION' not found. Please ensure the .env file exists and is loaded.");
+}
+
 var key = Environment.GetEnvironmentVariable("JWT_KEY");
+if (string.IsNullOrEmpty(key))
+{
+    throw new InvalidOperationException("JWT key 'JWT_KEY' not found. Please ensure the .env file exists and is loaded.");
+}
 
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseMySql(connectionString,
-    new MySqlServerVersion(new Version(8, 0, 32))));
+    ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
@@ -52,9 +62,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
@@ -62,7 +72,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// JWT Helper
+
 string GenerateJwtToken(string username, int userId)
 {
     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

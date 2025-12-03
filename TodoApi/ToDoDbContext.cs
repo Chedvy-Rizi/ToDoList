@@ -28,7 +28,7 @@ public partial class ToDoDbContext : DbContext
         {
             if (File.Exists(".env"))
                 Env.Load();
-            var connectionString = Environment.GetEnvironmentVariable("DB_NAME");
+            var connectionString = Environment.GetEnvironmentVariable("TODODB_CONNECTION");
             optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
         }
     }
@@ -43,7 +43,8 @@ public partial class ToDoDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("items");
+            entity.ToTable("Items");
+            // entity.ToTable("items");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(100);
@@ -53,7 +54,8 @@ public partial class ToDoDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("users");
+            entity.ToTable("Users");
+            //  entity.ToTable("users");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Password).HasMaxLength(100);
