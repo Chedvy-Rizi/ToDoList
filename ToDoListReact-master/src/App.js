@@ -123,6 +123,7 @@ function TodoPage() {
         </header>
         <section style={{ padding: '16px 32px 32px' }}>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {console.log(todos)}
             {todos && todos.map(todo => (
               <li key={todo.id} style={{
                 background: 'white',
