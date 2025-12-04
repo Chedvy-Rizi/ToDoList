@@ -58,7 +58,6 @@ function Register({ onLogin }) {
 
   async function handleRegister(e) {
     e.preventDefault();
-    console.log(username, password);
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/register`, {
         Username: username,
